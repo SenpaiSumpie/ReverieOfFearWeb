@@ -1,0 +1,6 @@
+[
+  { "slug": "occultist", "name": "The Occultist", "archetype": "Occultist", "complexity": "Medium", "synergy": ["Curses", "Rituals"] },
+  { "slug": "detective", "name": "The Detective", "archetype": "Detective", "complexity": "Easy", "synergy": ["Clues", "Control"] },
+  { "slug": "guardian", "name": "The Guardian", "archetype": "Guardian", "complexity": "Medium", "synergy": ["Defense", "Taunt"] }
+]
+

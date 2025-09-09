@@ -1,0 +1,6 @@
+[
+  { "slug": "the-veil", "name": "The Veil", "threatTier": "A", "agendaSpeed": "Fast", "tells": ["Mirrors", "Static"] },
+  { "slug": "the-beckoner", "name": "The Beckoner", "threatTier": "B", "agendaSpeed": "Medium", "tells": ["Whispers", "Candles"] },
+  { "slug": "the-caretaker", "name": "The Caretaker", "threatTier": "S", "agendaSpeed": "Slow", "tells": ["Keys", "Footsteps"] }
+]
+

@@ -1,0 +1,6 @@
+[
+  { "slug": "nightfall", "title": "Nightfall", "release": "Q4", "difficulty": "Normal", "theme": ["Urban", "Noir"] },
+  { "slug": "ruined-mall", "title": "Ruined Mall", "release": "Q1", "difficulty": "Hard", "theme": ["Claustrophobic", "Survival"] },
+  { "slug": "subway-silence", "title": "Subway Silence", "release": "Q2", "difficulty": "Normal", "theme": ["Isolation", "Pursuit"] }
+]
+
