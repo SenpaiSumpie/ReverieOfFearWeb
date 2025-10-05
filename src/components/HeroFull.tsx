@@ -47,8 +47,9 @@ export default function HeroFull() {
 			></canvas>
 			<div className="grain-bg absolute inset-0 pointer-events-none" />
 
-			<div className="relative z-10 max-w-7xl mx-auto px-6 pb-12 md:pb-16 h-full flex items-end">
-				<div>
+			{/* Bottom-left content overlay to avoid sitting at the top */}
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 z-10">
+				<div className="pointer-events-auto max-w-7xl mx-auto px-6 pb-12 md:pb-16">
 					<h1 className="font-display text-5xl md:text-8xl text-[color:var(--rof-off)] text-glow tracking-tight">
 						REVERIE OF FEAR
 					</h1>

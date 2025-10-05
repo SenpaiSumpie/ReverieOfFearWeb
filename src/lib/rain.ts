@@ -8,12 +8,24 @@ export function initRain(canvas: HTMLCanvasElement) {
 	let drops: { x: number; y: number; len: number; sp: number }[] = [];
 	let w = 0;
 	let h = 0;
+	let ro: ResizeObserver | null = null;
 	const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
 	function resize() {
-		const rect = canvas.getBoundingClientRect();
-		w = Math.max(1, rect.width);
-		h = Math.max(1, rect.height);
+		// Prefer observed content box; fallback to parent/client rects
+		let rect = canvas.getBoundingClientRect();
+		let ww = rect.width;
+		let hh = rect.height;
+		if (ww < 2 || hh < 2) {
+			const p = canvas.parentElement as HTMLElement | null;
+			if (p) {
+				const pr = p.getBoundingClientRect();
+				ww = pr.width || p.clientWidth;
+				hh = pr.height || p.clientHeight;
+			}
+		}
+		w = Math.max(1, ww);
+		h = Math.max(1, hh);
 		canvas.width = Math.floor(w * DPR);
 		canvas.height = Math.floor(h * DPR);
 		ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -21,13 +33,13 @@ export function initRain(canvas: HTMLCanvasElement) {
 	}
 
 	function initDrops() {
-		// Thinner + slower: fewer drops, shorter streaks, reduced speed
-		const target = Math.min(90, Math.max(16, Math.floor((w * h) / 100000)));
+		// Thicker + reversed direction: more drops, longer streaks, moderate speed
+		const target = Math.min(220, Math.max(40, Math.floor((w * h) / 60000)));
 		drops = new Array(target).fill(0).map(() => ({
 			x: Math.random() * w,
 			y: Math.random() * h,
-			len: 5 + Math.random() * 10, // 5–15px
-			sp: 80 + Math.random() * 140, // px/s
+			len: 10 + Math.random() * 14, // 10–24px
+			sp: 120 + Math.random() * 120, // px/s
 		}));
 	}
 
@@ -38,20 +50,20 @@ export function initRain(canvas: HTMLCanvasElement) {
 		if (!document.hidden) {
 			ctx.clearRect(0, 0, w, h);
 			ctx.globalCompositeOperation = 'screen';
-			ctx.strokeStyle = 'rgba(200,230,255,0.10)';
-			ctx.lineWidth = 0.7;
+			ctx.strokeStyle = 'rgba(200,230,255,0.16)';
+			ctx.lineWidth = 1.1;
 			ctx.beginPath();
 			for (const d of drops) {
-				const dx = -0.28 * d.len; // less angled
+				const dx = 0.35 * d.len; // reversed direction (leans right)
 				ctx.moveTo(d.x, d.y);
 				ctx.lineTo(d.x + dx, d.y + d.len);
 				d.y += d.sp * dt;
-				d.x += d.sp * dt * -0.22;
-				if (d.y - d.len > h || d.x + d.len < -20) {
-					d.x = Math.random() * w;
+				d.x += d.sp * dt * 0.24; // drift right
+				if (d.y - d.len > h || d.x - d.len > w + 20) {
+					d.x = -Math.random() * 50; // respawn just left of view
 					d.y = -Math.random() * 50;
-					d.len = 6 + Math.random() * 12;
-					d.sp = 140 + Math.random() * 200;
+					d.len = 10 + Math.random() * 14;
+					d.sp = 120 + Math.random() * 120;
 				}
 			}
 			ctx.stroke();
@@ -66,6 +78,9 @@ export function initRain(canvas: HTMLCanvasElement) {
 
 	window.addEventListener('resize', onResize);
 	document.addEventListener('visibilitychange', onVis);
+	// Observe layout changes to keep canvas covering the full hero
+	ro = new ResizeObserver(() => resize());
+	ro.observe(canvas);
 	resize();
 	raf = requestAnimationFrame(() => step(performance.now()));
 
@@ -73,5 +88,6 @@ export function initRain(canvas: HTMLCanvasElement) {
 		cancelAnimationFrame(raf);
 		window.removeEventListener('resize', onResize);
 		document.removeEventListener('visibilitychange', onVis);
+		if (ro) ro.disconnect();
 	};
 }
